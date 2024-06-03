@@ -7,7 +7,7 @@ import chalk from "chalk";
 // tap layar 15x isi kodam random
 // gift 1 coin = 1 kodam
 
-let tiktokUsername = "hadi_emperor";
+let tiktokUsername = "xalinko";
 
 
 
@@ -66,6 +66,7 @@ tiktokLiveConnection.on("chat", async (data) => {
 
 // And here we receive gifts sent to the streamer
 tiktokLiveConnection.on("gift", (data) => {
+    console.log(data)
   console.log(`${data.uniqueId} (userId:${data.userId}) sends ${data.giftId}`);
 });
 
