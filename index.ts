@@ -1,13 +1,14 @@
 import { WebcastPushConnection } from "tiktok-live-connector";
-import { kodamList } from "./utils/kodamlist";
+import { kodamList,specialKodamList } from "./utils/kodamlist";
 import { randomString } from "./utils/common";
 import { save, readAll, readByUsername } from "./utils/model";
+import { checkNama } from "./gemini";
 import chalk from "chalk";
 
 // tap layar 15x isi kodam random
 // gift 1 coin = 1 kodam
 
-let tiktokUsername = "xalinko";
+let tiktokUsername = "hasanahilmu82";
 
 
 
@@ -27,10 +28,11 @@ tiktokLiveConnection
 // Define the events that you want to handle
 // In this case we listen to chat messages (comments)
 tiktokLiveConnection.on("chat", async (data) => {
-  if (data.comment.match(/^cek/)) {
+  if (data.comment.match(/^cek|^Cek/)) {
     var khodam = randomString(kodamList);
     var checkExist = await readByUsername(data.uniqueId, data.comment);
     var nama = data.comment.replace("cek ", "");
+        nama = nama.replace("Cek ", "");
     console.log(
       "--------------------------------------------------------------------------------------"
     );
@@ -55,7 +57,13 @@ tiktokLiveConnection.on("chat", async (data) => {
     console.log(
       "--------------------------------------------------------------------------------------"
     );
-  } else {
+  }else if(data.comment.match(/^arti|^Arti/)){ 
+    var nama = data.comment.replace("arti ", "");
+        nama = nama.replace("Arti ", "");
+    console.log("---------[ ARTI NAMA "+nama+" ]---------");
+     await checkNama(nama);
+    console.log("");
+  }else {
     console.log(
       chalk.cyan("@" + data.uniqueId) +
         " : \"" +
@@ -66,8 +74,20 @@ tiktokLiveConnection.on("chat", async (data) => {
 
 // And here we receive gifts sent to the streamer
 tiktokLiveConnection.on("gift", (data) => {
-    console.log(data)
-  console.log(`${data.uniqueId} (userId:${data.userId}) sends ${data.giftId}`);
+  console.log("");
+  var khodam = randomString(specialKodamList);
+  if (data.giftType === 1 && !data.repeatEnd) {
+    // Streak in progress => show only temporary
+    console.log(`[!!] ${data.uniqueId} is sending gift ${data.giftName} x${data.repeatCount}`);
+} else {
+    // Streak ended or non-streakable gift => process the gift with final repeat_count
+    console.log(`[!!] ${data.uniqueId} has sent gift ${data.giftName} x${data.repeatCount}`);
+  }
+  console.log(chalk.red("--------------[ THANKS FOR THE GIFT ]--------------"));
+  console.log(chalk.cyan(`${data.uniqueId} MENDAPAT KHODAM ${khodam} !!!!!!!!!!!`));
+  console.log("---------------------------------------------------");
+  console.log("")
+
 });
 
 tiktokLiveConnection.on("like", (data) => {

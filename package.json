@@ -3,7 +3,9 @@
     "start": "tsx index.ts"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.12.0",
     "chalk": "^5.3.0",
+    "cli-markdown": "^3.4.0",
     "tiktok-live-connector": "^1.1.7"
   },
   "devDependencies": {
